@@ -58,7 +58,7 @@ public class ScoreboardManager extends AbstractPluginReceiver {
      */
     public ScoreboardManager(final Parkour parkour) {
         super(parkour);
-        this.enabled = parkour.getConfig().getBoolean("Scoreboard.Enabled");
+        this.enabled = parkour.getDefaultConfig().getBoolean("Scoreboard.Enabled");
 
         scoreboardDetails.put(COURSE_NAME, generateScoreboard("CourseName"));
         scoreboardDetails.put(BEST_TIME_EVER, generateScoreboard("BestTimeEver"));
@@ -90,7 +90,7 @@ public class ScoreboardManager extends AbstractPluginReceiver {
 
         Scoreboard board = setupScoreboard(player, session);
 
-        if (parkour.getConfig().isPreventPlayerCollisions()
+        if (parkour.getDefaultConfig().isPreventPlayerCollisions()
                 && PluginUtils.getMinorServerVersion() > 8) {
             Team team = board.registerNewTeam(PLUGIN_NAME);
             team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
@@ -207,8 +207,8 @@ public class ScoreboardManager extends AbstractPluginReceiver {
 
     private ScoreboardEntry generateScoreboard(String keyName) {
         ScoreboardEntry entry = new ScoreboardEntry();
-        entry.setEnabled(parkour.getConfig().getBoolean("Scoreboard." + keyName + ".Enabled"));
-        entry.setSequence(parkour.getConfig().getInt("Scoreboard." + keyName + ".Sequence"));
+        entry.setEnabled(parkour.getDefaultConfig().getBoolean("Scoreboard." + keyName + ".Enabled"));
+        entry.setSequence(parkour.getDefaultConfig().getInt("Scoreboard." + keyName + ".Sequence"));
         entry.setTranslation(TranslationUtils.getTranslation("Scoreboard." + keyName + "Title", false));
         return entry;
     }

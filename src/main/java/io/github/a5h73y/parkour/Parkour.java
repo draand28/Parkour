@@ -6,10 +6,8 @@ import io.github.a5h73y.parkour.commands.ParkourAutoTabCompleter;
 import io.github.a5h73y.parkour.commands.ParkourCommands;
 import io.github.a5h73y.parkour.commands.ParkourConsoleCommands;
 import io.github.a5h73y.parkour.configuration.ConfigManager;
-import io.github.a5h73y.parkour.configuration.ParkourConfiguration;
 import io.github.a5h73y.parkour.configuration.impl.DefaultConfig;
 import io.github.a5h73y.parkour.database.ParkourDatabase;
-import io.github.a5h73y.parkour.enums.ConfigType;
 import io.github.a5h73y.parkour.gui.ParkourGuiManager;
 import io.github.a5h73y.parkour.listener.BlockListener;
 import io.github.a5h73y.parkour.listener.ChatListener;
@@ -48,6 +46,7 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -115,7 +114,7 @@ public class Parkour extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        if (getConfig().getBoolean("Other.OnServerShutdown.BackupFiles")) {
+        if (getDefaultConfig().getBoolean("Other.OnServerShutdown.BackupFiles")) {
             Backup.backupNow();
         }
         getPlayerManager().teardownParkourPlayers();
@@ -132,19 +131,21 @@ public class Parkour extends JavaPlugin {
      * @return default config
      */
     @Override
-    @NotNull
-    public DefaultConfig getConfig() {
-        return (DefaultConfig) this.configManager.get(ConfigType.DEFAULT);
+    public FileConfiguration getConfig() {
+        throw new UnsupportedOperationException("Use getDefaultConfig()");
+    }
+
+    public DefaultConfig getDefaultConfig() {
+        return configManager.getDefaultConfig();
     }
 
     /**
-     * Get the matching {@link ParkourConfiguration} for the given {@link ConfigType}.
+     * Get the default config.yml file.
      *
-     * @param type {@link ConfigType}
-     * @return matching {@link ParkourConfiguration}
+     * @return {@link DefaultConfig}
      */
-    public static ParkourConfiguration getConfig(ConfigType type) {
-        return instance.configManager.get(type);
+    public static DefaultConfig getInstanceConfig() {
+        return instance.getDefaultConfig();
     }
 
     /**
@@ -153,16 +154,7 @@ public class Parkour extends JavaPlugin {
      */
     @Override
     public void saveConfig() {
-        getConfig().save();
-    }
-
-    /**
-     * Get the default config.yml file.
-     *
-     * @return {@link DefaultConfig}
-     */
-    public static DefaultConfig getDefaultConfig() {
-        return instance.getConfig();
+        getDefaultConfig().write();
     }
 
     /**
@@ -269,7 +261,7 @@ public class Parkour extends JavaPlugin {
         getCommand(PLUGIN_NAME).setExecutor(new ParkourCommands(this));
         getCommand("paconsole").setExecutor(new ParkourConsoleCommands(this));
 
-        if (this.getConfig().getBoolean("Other.UseAutoTabCompletion")) {
+        if (this.getDefaultConfig().getBoolean("Other.UseAutoTabCompletion")) {
             getCommand(PLUGIN_NAME).setTabCompleter(new ParkourAutoTabCompleter(this));
         }
 
@@ -292,7 +284,7 @@ public class Parkour extends JavaPlugin {
      * Check to see if a newer version exists on Spigot.
      */
     private void checkForUpdates() {
-        if (getConfig().getBoolean("Other.CheckForUpdates")) {
+        if (getDefaultConfig().getBoolean("Other.CheckForUpdates")) {
             new ParkourUpdater(this, SPIGOT_PLUGIN_ID).checkForUpdateAsync();
         }
     }

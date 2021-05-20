@@ -102,7 +102,7 @@ public class SignListener extends AbstractPluginReceiver implements Listener {
                 return;
         }
 
-        event.setLine(0, parkour.getConfig().getSignHeader());
+        event.setLine(0, parkour.getDefaultConfig().getSignHeader());
     }
 
     /**
@@ -122,13 +122,13 @@ public class SignListener extends AbstractPluginReceiver implements Listener {
             return;
         }
 
-        if (!parkour.getConfig().getBoolean("Other.Parkour.SignProtection")) {
+        if (!parkour.getDefaultConfig().getBoolean("Other.Parkour.SignProtection")) {
             return;
         }
 
         String[] lines = ((Sign) event.getClickedBlock().getState()).getLines();
 
-        if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase(parkour.getConfig().getStrippedSignHeader())) {
+        if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase(parkour.getDefaultConfig().getStrippedSignHeader())) {
             return;
         }
 
@@ -163,12 +163,12 @@ public class SignListener extends AbstractPluginReceiver implements Listener {
         Sign sign = (Sign) event.getClickedBlock().getState();
         String[] lines = sign.getLines();
 
-        if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase(parkour.getConfig().getStrippedSignHeader())) {
+        if (!ChatColor.stripColor(lines[0]).equalsIgnoreCase(parkour.getDefaultConfig().getStrippedSignHeader())) {
             if (!parkour.getPlayerManager().isPlaying(event.getPlayer())) {
                 return;
             }
 
-            if (!parkour.getConfig().getBoolean("OnCourse.EnforceParkourSigns")) {
+            if (!parkour.getDefaultConfig().getBoolean("OnCourse.EnforceParkourSigns")) {
                 return;
             }
 
@@ -177,7 +177,7 @@ public class SignListener extends AbstractPluginReceiver implements Listener {
             return;
         }
 
-        if (parkour.getConfig().isPermissionForSignInteraction()
+        if (parkour.getDefaultConfig().isPermissionForSignInteraction()
                 && !PermissionUtils.hasPermission(event.getPlayer(), Permission.BASIC_SIGNS)) {
             return;
         }

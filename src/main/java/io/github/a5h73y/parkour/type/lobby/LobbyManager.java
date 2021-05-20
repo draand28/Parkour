@@ -143,7 +143,7 @@ public class LobbyManager extends AbstractPluginReceiver implements Cacheable<Lo
     public void teleportToLeaveDestination(Player player, ParkourSession session) {
         String lobbyName = null;
 
-        if (parkour.getConfig().getBoolean("OnLeave.TeleportToLinkedLobby")) {
+        if (parkour.getDefaultConfig().getBoolean("OnLeave.TeleportToLinkedLobby")) {
             lobbyName = CourseInfo.getLinkedLobby(session.getCourse().getName());
         }
 

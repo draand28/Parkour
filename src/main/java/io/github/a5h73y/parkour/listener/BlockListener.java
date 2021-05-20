@@ -54,12 +54,12 @@ public class BlockListener extends AbstractPluginReceiver implements Listener {
             return;
         }
 
-        if (parkour.getConfig().getBoolean("OnCourse.AnybodyPlaceBreakBlocks")) {
+        if (parkour.getDefaultConfig().getBoolean("OnCourse.AnybodyPlaceBreakBlocks")) {
             return;
         }
 
         if (!PermissionUtils.hasPermission(player, Permission.ADMIN_ALL, false)
-                || !parkour.getConfig().getBoolean("OnCourse.AdminPlaceBreakBlocks")) {
+                || !parkour.getDefaultConfig().getBoolean("OnCourse.AdminPlaceBreakBlocks")) {
             event.setCancelled(true);
         }
     }

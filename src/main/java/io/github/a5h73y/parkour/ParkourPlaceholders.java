@@ -39,7 +39,7 @@ public class ParkourPlaceholders extends PlaceholderExpansion {
      */
     public ParkourPlaceholders(final Parkour parkour) {
         this.parkour = parkour;
-        this.cache = new GenericCache<>(parkour.getConfig().getLong("Plugin.PlaceholderAPI.CacheTime"));
+        this.cache = new GenericCache<>(parkour.getDefaultConfig().getLong("Plugin.PlaceholderAPI.CacheTime"));
     }
 
     @NotNull

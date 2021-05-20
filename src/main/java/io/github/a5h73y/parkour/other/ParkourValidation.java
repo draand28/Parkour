@@ -3,7 +3,6 @@ package io.github.a5h73y.parkour.other;
 import static io.github.a5h73y.parkour.other.ParkourConstants.ERROR_NO_EXIST;
 
 import io.github.a5h73y.parkour.Parkour;
-import io.github.a5h73y.parkour.enums.ConfigType;
 import io.github.a5h73y.parkour.enums.Permission;
 import io.github.a5h73y.parkour.plugin.EconomyApi;
 import io.github.a5h73y.parkour.type.challenge.Challenge;
@@ -44,7 +43,7 @@ public class ParkourValidation {
             } else {
                 TranslationUtils.sendMessage(player, "&cDefault Lobby has not been set! Please tell the Owner!");
             }
-        } else if (Bukkit.getWorld(Parkour.getDefaultConfig().getString("Lobby.default.World")) == null) {
+        } else if (Bukkit.getWorld(Parkour.getInstanceConfig().getString("Lobby.default.World")) == null) {
             TranslationUtils.sendTranslation("Error.UnknownWorld", player);
             lobbySet = false;
         }
@@ -64,12 +63,12 @@ public class ParkourValidation {
             return false;
         }
 
-        if (Bukkit.getWorld(Parkour.getDefaultConfig().getString("Lobby." + lobbyName + ".World")) == null) {
+        if (Bukkit.getWorld(Parkour.getInstanceConfig().getString("Lobby." + lobbyName + ".World")) == null) {
             TranslationUtils.sendTranslation("Error.UnknownWorld", player);
             return false;
         }
 
-        if (Parkour.getDefaultConfig().getBoolean("LobbySettings.EnforceWorld")
+        if (Parkour.getInstanceConfig().getBoolean("LobbySettings.EnforceWorld")
                 && !player.getWorld().getName().equals(LobbyInfo.getLobbyLocation(lobbyName).getWorld().getName())) {
             TranslationUtils.sendTranslation("Error.WrongWorld", player);
             return false;
@@ -98,11 +97,11 @@ public class ParkourValidation {
             return false;
         }
 
-        if (Bukkit.getWorld(Parkour.getDefaultConfig().getString("Lobby." + lobbyName + ".World")) == null) {
+        if (Bukkit.getWorld(Parkour.getInstanceConfig().getString("Lobby." + lobbyName + ".World")) == null) {
             return false;
         }
 
-        if (Parkour.getDefaultConfig().getBoolean("LobbySettings.EnforceWorld")
+        if (Parkour.getInstanceConfig().getBoolean("LobbySettings.EnforceWorld")
                 && !player.getWorld().getName().equals(LobbyInfo.getLobbyLocation(lobbyName).getWorld().getName())) {
             return false;
         }
@@ -134,8 +133,8 @@ public class ParkourValidation {
         Parkour parkour = Parkour.getInstance();
 
         /* Player in wrong world */
-        if (parkour.getConfig().isJoinEnforceWorld()
-                && !player.getLocation().getWorld().getName().equals(course.getCheckpoints().get(0).getWorld())) {
+        if (parkour.getDefaultConfig().isJoinEnforceWorld()
+                && !player.getLocation().getWorld().getName().equals(course.getCheckpoints().get(0).getWorldName())) {
             TranslationUtils.sendTranslation("Error.WrongWorld", player);
             return false;
         }
@@ -145,7 +144,7 @@ public class ParkourValidation {
 
         if (minimumLevel > 0 && !PermissionUtils.hasPermission(player, Permission.ADMIN_LEVEL_BYPASS, false)
                 && !PermissionUtils.hasSpecificPermission(
-                        player, Permission.PARKOUR_LEVEL, String.valueOf(minimumLevel), false)) {
+                player, Permission.PARKOUR_LEVEL, String.valueOf(minimumLevel), false)) {
             int currentLevel = PlayerInfo.getParkourLevel(player);
 
             if (currentLevel < minimumLevel) {
@@ -155,14 +154,14 @@ public class ParkourValidation {
         }
 
         /* Permission system */
-        if (Parkour.getDefaultConfig().getBoolean("OnJoin.PerCoursePermission")
+        if (Parkour.getInstanceConfig().getBoolean("OnJoin.PerCoursePermission")
                 && !PermissionUtils.hasSpecificPermission(player, Permission.PARKOUR_COURSE, course.getName(), true)) {
             return false;
         }
 
         /* Course isn't ready */
         if (!CourseInfo.getReadyStatus(course.getName())) {
-            if (Parkour.getDefaultConfig().getBoolean("OnJoin.EnforceReady")) {
+            if (Parkour.getInstanceConfig().getBoolean("OnJoin.EnforceReady")) {
                 if (!PermissionUtils.hasPermissionOrCourseOwnership(player, Permission.ADMIN_READY_BYPASS, course.getName())) {
                     TranslationUtils.sendTranslation("Error.NotReady", player);
                     return false;
@@ -174,12 +173,12 @@ public class ParkourValidation {
 
         /* Check if the player can leave the course for another */
         if (parkour.getPlayerManager().isPlaying(player)) {
-            if (Parkour.getDefaultConfig().getBoolean("OnCourse.PreventJoiningDifferentCourse")) {
+            if (Parkour.getInstanceConfig().getBoolean("OnCourse.PreventJoiningDifferentCourse")) {
                 TranslationUtils.sendTranslation("Error.JoiningAnotherCourse", player);
                 return false;
             }
-            if (Parkour.getDefaultConfig().isCourseEnforceWorld()
-                    && !player.getLocation().getWorld().getName().equals(course.getCheckpoints().get(0).getWorld())) {
+            if (Parkour.getInstanceConfig().isCourseEnforceWorld()
+                    && !player.getLocation().getWorld().getName().equals(course.getCheckpoints().get(0).getWorldName())) {
                 TranslationUtils.sendTranslation("Error.WrongWorld", player);
                 return false;
             }
@@ -222,7 +221,7 @@ public class ParkourValidation {
      */
     public static boolean canJoinCourseSilent(Player player, String courseName) {
         /* Player in wrong world */
-        if (Parkour.getDefaultConfig().isJoinEnforceWorld()
+        if (Parkour.getInstanceConfig().isJoinEnforceWorld()
                 && !player.getLocation().getWorld().getName().equals(CourseInfo.getWorld(courseName))) {
             return false;
         }
@@ -233,7 +232,7 @@ public class ParkourValidation {
         if (minimumLevel > 0
                 && !PermissionUtils.hasPermission(player, Permission.ADMIN_LEVEL_BYPASS, false)
                 && !PermissionUtils.hasSpecificPermission(
-                        player, Permission.PARKOUR_LEVEL, String.valueOf(minimumLevel), false)) {
+                player, Permission.PARKOUR_LEVEL, String.valueOf(minimumLevel), false)) {
             int currentLevel = PlayerInfo.getParkourLevel(player);
 
             if (currentLevel < minimumLevel) {
@@ -242,19 +241,19 @@ public class ParkourValidation {
         }
 
         /* Permission system */
-        if (Parkour.getDefaultConfig().getBoolean("OnJoin.PerCoursePermission")
+        if (Parkour.getInstanceConfig().getBoolean("OnJoin.PerCoursePermission")
                 && !PermissionUtils.hasSpecificPermission(player, Permission.PARKOUR_COURSE, courseName, false)) {
             return false;
         }
 
         /* Course isn't ready */
-        if (!CourseInfo.getReadyStatus(courseName) && Parkour.getDefaultConfig().getBoolean("OnJoin.EnforceReady")) {
+        if (!CourseInfo.getReadyStatus(courseName) && Parkour.getInstanceConfig().getBoolean("OnJoin.EnforceReady")) {
             return false;
         }
 
         /* Check if player has enough currency to join */
         if (Parkour.getInstance().getEconomyApi().isEnabled()) {
-            int joinFee = CourseInfo.getEconomyJoiningFee(courseName);
+            double joinFee = CourseInfo.getEconomyJoiningFee(courseName);
             return joinFee <= 0 || Parkour.getInstance().getEconomyApi().hasAmount(player, joinFee);
         }
 
@@ -565,13 +564,12 @@ public class ParkourValidation {
      * @return player can delete autostart
      */
     public static boolean canDeleteAutoStart(Player player, String courseName, String coordinates) {
-        if (Parkour.getInstance().getCourseManager().getAutoStartCourse(player.getLocation()) == null) {
+        if (!CourseInfo.hasAutoStart(coordinates)) {
             TranslationUtils.sendMessage(player, "There is no AutoStart at this Location.");
             return false;
         }
 
-        courseName = courseName.toLowerCase();
-        if (!Parkour.getConfig(ConfigType.COURSES).getString("CourseInfo.AutoStart." + coordinates).equals(courseName)) {
+        if (courseName.equals(CourseInfo.getAutoStart(coordinates))) {
             TranslationUtils.sendMessage(player,
                     "This AutoStart can not be deleted as it is not linked to course: " + courseName);
             return false;

@@ -317,7 +317,7 @@ public class ParkourConsoleCommands extends AbstractPluginReceiver implements Co
                     return false;
                 }
 
-                parkour.getConfig().addWhitelistedCommand(sender, args[1]);
+                parkour.getDefaultConfig().addWhitelistedCommand(sender, args[1]);
                 break;
 
             case "yes":
@@ -336,7 +336,7 @@ public class ParkourConsoleCommands extends AbstractPluginReceiver implements Co
                 }
 
                 if (!args[1].startsWith("MySQL")) {
-                    TranslationUtils.sendValue(sender, args[1], parkour.getConfig().getString(args[1]));
+                    TranslationUtils.sendValue(sender, args[1], parkour.getDefaultConfig().getString(args[1]));
                 }
                 break;
 

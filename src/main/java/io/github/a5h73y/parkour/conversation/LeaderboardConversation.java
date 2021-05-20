@@ -77,13 +77,13 @@ public class LeaderboardConversation extends ParkourConversation {
         @Override
         protected boolean isNumberValid(@NotNull ConversationContext context,
                                         @NotNull Number input) {
-            return input.intValue() > 0 && input.intValue() <= Parkour.getDefaultConfig().getMaximumCoursesCached();
+            return input.intValue() > 0 && input.intValue() <= Parkour.getInstanceConfig().getMaximumCoursesCached();
         }
 
         @Override
         protected String getFailedValidationText(@NotNull ConversationContext context,
                                                  @NotNull Number invalidInput) {
-            return "Amount must be between 1 and " + Parkour.getDefaultConfig().getMaximumCoursesCached() + ".";
+            return "Amount must be between 1 and " + Parkour.getInstanceConfig().getMaximumCoursesCached() + ".";
         }
 
         @Override

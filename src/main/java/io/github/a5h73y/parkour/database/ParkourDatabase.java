@@ -14,12 +14,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.husk.Database;
 import pro.husk.mysql.MySQL;
@@ -55,14 +57,15 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
     /**
      * Get the course's unique ID based on its name in the database.
      *
-     * @param courseName name of the course
+     * @param courseNameRaw name of the course
      * @param printError display error if it doesn't exist
      * @return course ID
      */
-    public int getCourseId(String courseName, boolean printError) {
-        if (courseIdCache.containsKey(courseName.toLowerCase())) {
-            PluginUtils.debug("Cached value found for " + courseName + ": " + courseIdCache.get(courseName.toLowerCase()));
-            return courseIdCache.get(courseName.toLowerCase());
+    public int getCourseId(@NotNull String courseNameRaw, boolean printError) {
+        String courseName = courseNameRaw.toLowerCase(Locale.ROOT);
+        if (courseIdCache.containsKey(courseName)) {
+            PluginUtils.debug("Cached value found for " + courseName + ": " + courseIdCache.get(courseName));
+            return courseIdCache.get(courseName);
         }
 
         PluginUtils.debug("Finding course ID for " + courseName);
@@ -75,7 +78,7 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
             }
             rs.getStatement().close();
             if (courseId != -1) {
-                courseIdCache.put(courseName.toLowerCase(), courseId);
+                courseIdCache.put(courseName, courseId);
             }
         } catch (SQLException e) {
             logSqlException(e);
@@ -306,7 +309,7 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
      * @param deaths deaths accumulated
      */
     public void insertOrUpdateTime(String courseName, Player player, long time, int deaths, boolean isNewRecord) {
-        boolean updatePlayerTime = parkour.getConfig().getBoolean("OnFinish.UpdatePlayerDatabaseTime");
+        boolean updatePlayerTime = parkour.getDefaultConfig().getBoolean("OnFinish.UpdatePlayerDatabaseTime");
         PluginUtils.debug("Potentially Inserting or Updating Time for player: " + player.getName()
                 + ", isNewRecord: " + isNewRecord + ", updatePlayerTime: " + updatePlayerTime);
 
@@ -528,17 +531,17 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
      */
     private void initiateConnection() {
         PluginUtils.debug("Initialising SQL Connection.");
-        if (parkour.getConfig().getBoolean("MySQL.Use")) {
+        if (parkour.getDefaultConfig().getBoolean("MySQL.Use")) {
             PluginUtils.debug("Opting to use MySQL.");
-            this.database = new MySQL(parkour.getConfig().getString("MySQL.URL"),
-                    parkour.getConfig().getString("MySQL.Username"),
-                    parkour.getConfig().getString("MySQL.Password"),
-                    parkour.getConfig().getBoolean("MySQL.LegacyDriver"));
+            this.database = new MySQL(parkour.getDefaultConfig().getString("MySQL.URL"),
+                    parkour.getDefaultConfig().getString("MySQL.Username"),
+                    parkour.getDefaultConfig().getString("MySQL.Password"),
+                    parkour.getDefaultConfig().getBoolean("MySQL.LegacyDriver"));
         } else {
             PluginUtils.debug("Opting to use SQLite.");
-            String pathOverride = parkour.getConfig().getString("SQLite.PathOverride", "");
+            String pathOverride = parkour.getDefaultConfig().getString("SQLite.PathOverride");
             String path = pathOverride.isEmpty()
-                    ? parkour.getDataFolder() + File.separator + "sqlite-db" + File.separator : pathOverride;
+                    ? parkour.getDataFolder() + "/sqlite-db/" : pathOverride;
 
             this.database = new SQLite(path, "parkour.db");
         }
@@ -587,8 +590,8 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
         e.printStackTrace();
 
         // if they were trying to use MySQL
-        if (parkour.getConfig().getBoolean("MySQL.Use")) {
-            parkour.getConfig().set("MySQL.Use", false);
+        if (parkour.getDefaultConfig().getBoolean("MySQL.Use")) {
+            parkour.getDefaultConfig().set("MySQL.Use", false);
             parkour.saveConfig();
 
             PluginUtils.log("[SQL] Defaulting to SQLite...", 1);
@@ -631,14 +634,14 @@ public class ParkourDatabase extends AbstractPluginReceiver implements Cacheable
      * @return amount of results
      */
     private int calculateResultsLimit(int limit) {
-        return Math.max(1, Math.min(limit, parkour.getConfig().getMaximumCoursesCached()));
+        return Math.max(1, Math.min(limit, parkour.getDefaultConfig().getMaximumCoursesCached()));
     }
 
     private List<TimeEntry> getCourseCache(String courseName) {
         if (!resultsCache.containsKey(courseName.toLowerCase())) {
             PluginUtils.debug("Populating times cache for " + courseName);
             resultsCache.put(courseName.toLowerCase(),
-                    getTopCourseResults(courseName, parkour.getConfig().getMaximumCoursesCached()));
+                    getTopCourseResults(courseName, parkour.getDefaultConfig().getMaximumCoursesCached()));
         }
 
         return resultsCache.get(courseName.toLowerCase());

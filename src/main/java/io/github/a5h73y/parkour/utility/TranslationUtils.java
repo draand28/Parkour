@@ -40,7 +40,7 @@ public class TranslationUtils {
 			return "Invalid translation.";
 		}
 
-		String translated = Parkour.getConfig(ConfigType.STRINGS).getString(translationKey);
+		String translated = Parkour.getInstance().getConfigManager().getStringsConfig().getString(translationKey);
 		translated = translated != null ? colour(translated) : "String not found: " + translationKey;
 
 		return prefix && ValidationUtils.isStringValid(translated)

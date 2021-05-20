@@ -1,17 +1,16 @@
 package io.github.a5h73y.parkour.conversation.other;
 
-import static io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig.PARKOUR_KIT_CONFIG_PREFIX;
 import static io.github.a5h73y.parkour.conversation.ParkourConversation.sendErrorMessage;
 import static io.github.a5h73y.parkour.enums.ActionType.BOUNCE;
 import static io.github.a5h73y.parkour.enums.ActionType.CLIMB;
 import static io.github.a5h73y.parkour.enums.ActionType.LAUNCH;
 import static io.github.a5h73y.parkour.enums.ActionType.REPULSE;
 import static io.github.a5h73y.parkour.enums.ActionType.SPEED;
+import static io.github.a5h73y.parkour.type.kit.ParkourKitInfo.PARKOUR_KIT_CONFIG_PREFIX;
 
 import io.github.a5h73y.parkour.Parkour;
-import io.github.a5h73y.parkour.configuration.ParkourConfiguration;
+import io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig;
 import io.github.a5h73y.parkour.enums.ActionType;
-import io.github.a5h73y.parkour.enums.ConfigType;
 import io.github.a5h73y.parkour.type.kit.ParkourKitInfo;
 import io.github.a5h73y.parkour.utility.MaterialUtils;
 import io.github.a5h73y.parkour.utility.TranslationUtils;
@@ -78,7 +77,7 @@ public class AddKitItemConversation {
                 return this;
             }
 
-            if (Parkour.getDefaultConfig().contains(PARKOUR_KIT_CONFIG_PREFIX + kitName + "." + material.name())) {
+            if (Parkour.getInstanceConfig().contains(PARKOUR_KIT_CONFIG_PREFIX + kitName + "." + material.name())) {
                 sendErrorMessage(context, material.name() + " already exists in this ParkourKit!");
                 return this;
             }
@@ -194,19 +193,17 @@ public class AddKitItemConversation {
             boolean hasStrength = context.getSessionData(STRENGTH) != null;
             boolean hasDuration = context.getSessionData(DURATION) != null;
 
-            ParkourConfiguration parkourKitConfig = Parkour.getConfig(ConfigType.PARKOURKIT);
+            ParkourKitConfig config = Parkour.getInstance().getConfigManager().getParkourKitConfig();
             String path = PARKOUR_KIT_CONFIG_PREFIX + kitName + "." + material;
 
-            parkourKitConfig.set(path + ".Action", action);
+            config.set(path + ".Action", action);
 
             if (hasStrength) {
-                parkourKitConfig.set(path + ".Strength", context.getSessionData(STRENGTH));
+                config.set(path + ".Strength", context.getSessionData(STRENGTH));
             }
             if (hasDuration) {
-                parkourKitConfig.set(path + ".Duration", context.getSessionData(DURATION));
+                config.set(path + ".Duration", context.getSessionData(DURATION));
             }
-
-            parkourKitConfig.save();
 
             if (addAnother) {
                 context.setSessionData(STRENGTH, null);

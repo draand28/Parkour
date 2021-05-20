@@ -49,7 +49,7 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
 
         Player player = (Player) sender;
 
-        if (Parkour.getDefaultConfig().isPermissionsForCommands()
+        if (Parkour.getInstanceConfig().isPermissionsForCommands()
                 && !PermissionUtils.hasPermission(player, Permission.BASIC_COMMANDS)) {
             return false;
         }
@@ -206,7 +206,7 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
                 if (!ValidationUtils.validateArgs(player, args, 2)) {
                     return false;
 
-                } else if (!parkour.getConfig().getBoolean("OnJoin.AllowViaCommand")) {
+                } else if (!parkour.getDefaultConfig().getBoolean("OnJoin.AllowViaCommand")) {
                     TranslationUtils.sendTranslation("Error.AllowViaCommand", player);
                     return false;
                 }
@@ -643,7 +643,7 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
                     return false;
                 }
 
-                parkour.getConfig().addWhitelistedCommand(player, args[1]);
+                parkour.getDefaultConfig().addWhitelistedCommand(player, args[1]);
                 break;
 
             //Other commands//
@@ -677,7 +677,7 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
                 }
 
                 if (player.isOp() && !args[1].startsWith("MySQL")) {
-                    TranslationUtils.sendValue(sender, args[1], parkour.getConfig().getString(args[1]));
+                    TranslationUtils.sendValue(sender, args[1], parkour.getDefaultConfig().getString(args[1]));
                 }
                 break;
 

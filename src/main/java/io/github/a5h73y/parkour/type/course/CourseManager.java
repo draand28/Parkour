@@ -6,7 +6,6 @@ import static io.github.a5h73y.parkour.other.ParkourConstants.ERROR_UNKNOWN_PLAY
 
 import com.cryptomorin.xseries.XMaterial;
 import io.github.a5h73y.parkour.Parkour;
-import io.github.a5h73y.parkour.configuration.ParkourConfiguration;
 import io.github.a5h73y.parkour.conversation.LeaderboardConversation;
 import io.github.a5h73y.parkour.conversation.SetCourseConversation;
 import io.github.a5h73y.parkour.database.TimeEntry;
@@ -31,11 +30,10 @@ import io.github.a5h73y.parkour.utility.PluginUtils;
 import io.github.a5h73y.parkour.utility.StringUtils;
 import io.github.a5h73y.parkour.utility.TranslationUtils;
 import io.github.a5h73y.parkour.utility.ValidationUtils;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -174,22 +172,8 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
         }
 
         String courseName = courseNameInput.toLowerCase();
-        Location location = player.getLocation();
-        ParkourConfiguration courseConfig = Parkour.getConfig(ConfigType.COURSES);
 
-        courseConfig.set(courseName + ".Creator", player.getName());
-        courseConfig.set(courseName + ".Views", 0);
-        courseConfig.set(courseName + ".Completed", 0);
-        courseConfig.set(courseName + ".World", location.getWorld().getName());
-
-        parkour.getCheckpointManager().createCheckpointData(courseName, player.getLocation(), 0);
-
-        List<String> courseList = CourseInfo.getAllCourseNames();
-        courseList.add(courseName);
-        Collections.sort(courseList);
-        courseConfig.set("Courses", courseList);
-        courseConfig.save();
-
+        CourseInfo.createCourseData(courseName, player);
         PlayerInfo.setSelectedCourse(player, courseName);
 
         TranslationUtils.sendValueTranslation("Parkour.Created", courseName, player);
@@ -262,25 +246,18 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
         }
 
         Block block = player.getLocation().getBlock();
-        String coordinates = block.getX() + "-" + block.getY() + "-" + block.getZ();
+        String coordinates = parkour.getDefaultConfig().getAutoStartKey(block);
 
-        if (parkour.getConfig().isAutoStartIncludeWorld()) {
-            coordinates += "-" + block.getWorld().getName();
-        }
-
-        ParkourConfiguration courseConfig = Parkour.getConfig(ConfigType.COURSES);
-
-        if (courseConfig.contains("CourseInfo.AutoStart." + coordinates)) {
+        if (CourseInfo.hasAutoStart(coordinates)) {
             TranslationUtils.sendMessage(player, "There is already an AutoStart here!");
             return;
         }
 
-        courseConfig.set("CourseInfo.AutoStart." + coordinates, courseName.toLowerCase());
-        courseConfig.save();
+        CourseInfo.setAutoStart(coordinates, courseName.toLowerCase(Locale.ROOT));
 
         block.setType(XMaterial.STONE_PRESSURE_PLATE.parseMaterial());
         Block blockUnder = block.getRelative(BlockFace.DOWN);
-        blockUnder.setType(parkour.getConfig().getAutoStartMaterial());
+        blockUnder.setType(parkour.getDefaultConfig().getAutoStartMaterial());
 
         TranslationUtils.sendPropertySet(player, "AutoStart", courseName, "your position");
     }
@@ -294,25 +271,8 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
      */
     @Nullable
     public String getAutoStartCourse(final Location location) {
-        ParkourConfiguration courseConfig = Parkour.getConfig(ConfigType.COURSES);
-        String coordinates = location.getBlockX() + "-" + location.getBlockY() + "-" + location.getBlockZ();
-
-        if (parkour.getConfig().isAutoStartIncludeWorld()) {
-            coordinates += "-" + location.getWorld().getName();
-        }
-
-        ConfigurationSection entries = courseConfig.getConfigurationSection("CourseInfo.AutoStart");
-
-        if (entries != null) {
-            // Go through each entry to find matching coordinates, then return the course
-            for (String entry : entries.getKeys(false)) {
-                if (entry.equals(coordinates)) {
-                    return courseConfig.getString("CourseInfo.AutoStart." + entry);
-                }
-            }
-        }
-
-        return null;
+        String coordinates = parkour.getDefaultConfig().getAutoStartKey(location.getBlock());
+        return CourseInfo.getAutoStart(coordinates);
     }
 
     /**
@@ -340,7 +300,7 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
             return;
         }
 
-        parkour.getCheckpointManager().createCheckpointData(courseName, player.getLocation(), 0);
+        CourseInfo.createCheckpointData(courseName, player.getLocation(), 0);
         PluginUtils.logToFile(courseName + " start location was reset by " + player.getName());
         TranslationUtils.sendPropertySet(player, "Start Location", courseName, "your position");
     }
@@ -395,9 +355,9 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
      * @param secondsValue new maximum seconds
      */
     public void setMaxTime(final CommandSender sender, final String courseName, final String secondsValue) {
-        if (!parkour.getConfig().getBoolean("OnCourse.DisplayLiveTime")
-                && !(parkour.getConfig().getBoolean("Scoreboard.Enabled")
-                && parkour.getConfig().getBoolean("Scoreboard.LiveTimer.Enabled"))) {
+        if (!parkour.getDefaultConfig().getBoolean("OnCourse.DisplayLiveTime")
+                && !(parkour.getDefaultConfig().getBoolean("Scoreboard.Enabled")
+                && parkour.getDefaultConfig().getBoolean("Scoreboard.LiveTimer.Enabled"))) {
             TranslationUtils.sendMessage(sender, "The live timer is disabled!");
             return;
         }
@@ -501,7 +461,7 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
             return;
         }
 
-        if (parkour.getConfig().isLeaveDestroyCourseProgress()) {
+        if (parkour.getDefaultConfig().isLeaveDestroyCourseProgress()) {
             TranslationUtils.sendMessage(sender,
                     "Disable Course progress destruction in the plugin configuration to allow for Courses to be resumable.");
             return;
@@ -798,18 +758,8 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
         }
 
         String courseName = courseNameInput.toLowerCase();
-        ParkourConfiguration courseConfig = Parkour.getConfig(ConfigType.COURSES);
-        Set<String> properties = courseConfig.getConfigurationSection(courseName).getKeys(false);
 
-        for (String property : properties) {
-            if (property.equals("Creator") || property.equals("World")) {
-                continue;
-            }
-
-            courseConfig.set(courseName + "." + property, null);
-        }
-
-        courseConfig.save();
+        CourseInfo.resetCourseData(courseName);
         parkour.getDatabase().deleteCourseTimes(courseName);
         TranslationUtils.sendValueTranslation("Parkour.Reset", courseName, sender);
         PluginUtils.logToFile(courseName + " course was reset by " + sender.getName());
@@ -1096,7 +1046,7 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
         String parkourKitName = CourseInfo.getParkourKit(courseName);
         ParkourKit parkourKit = parkour.getParkourKitManager().getParkourKit(parkourKitName);
         ParkourMode parkourMode = CourseInfo.getCourseMode(courseName);
-        List<Checkpoint> checkpoints = parkour.getCheckpointManager().getCheckpoints(courseName);
+        List<Checkpoint> checkpoints = CourseInfo.extractCheckpoints(courseName);
         return new Course(courseName, checkpoints, parkourKit, parkourMode);
     }
 
@@ -1123,7 +1073,7 @@ public class CourseManager extends AbstractPluginReceiver implements Cacheable<C
         int fromIndex = (page - 1) * results;
 
         List<String> courseList = CourseInfo.getAllCourseNames();
-        if (parkour.getConfig().getBoolean("Other.Display.OnlyReadyCourses")
+        if (parkour.getDefaultConfig().getBoolean("Other.Display.OnlyReadyCourses")
                 && !PermissionUtils.hasPermission(sender, Permission.ADMIN_READY_BYPASS, false)) {
             courseList = courseList.stream()
                     .filter(CourseInfo::getReadyStatus)

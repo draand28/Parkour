@@ -1,22 +1,19 @@
 package io.github.a5h73y.parkour.configuration.impl;
 
-import io.github.a5h73y.parkour.configuration.ParkourConfiguration;
+import static io.github.a5h73y.parkour.type.kit.ParkourKitInfo.PARKOUR_KIT_CONFIG_PREFIX;
+
 import io.github.a5h73y.parkour.other.ParkourConstants;
 import io.github.a5h73y.parkour.utility.MaterialUtils;
 import io.github.a5h73y.parkour.utility.PluginUtils;
+import java.io.File;
+import de.leonhard.storage.Yaml;
 import org.bukkit.Material;
 
-public class ParkourKitConfig extends ParkourConfiguration {
-	
-	public static final String PARKOUR_KIT_CONFIG_PREFIX = "ParkourKit.";
+public class ParkourKitConfig extends Yaml {
 
-	@Override
-	protected String getFileName() {
-		return "parkourkit.yml";
-	}
+	public ParkourKitConfig(File path) {
+		super(path);
 
-	@Override
-	protected void initializeConfig() {
 		if (!this.contains("ParkourKit.default")) {
 			createStandardKit(ParkourConstants.DEFAULT);
 		}

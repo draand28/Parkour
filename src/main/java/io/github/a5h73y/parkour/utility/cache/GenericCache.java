@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
@@ -19,7 +21,7 @@ public class GenericCache<K, V> implements IGenericCache<K, V> {
 
     public static final Long DEFAULT_CACHE_TIMEOUT = 15L;
 
-    protected Map<K, CacheValue<V>> cacheMap;
+    protected ConcurrentMap<K, CacheValue<V>> cacheMap;
     protected final Long cacheTimeout;
 
     public GenericCache() {
@@ -56,7 +58,7 @@ public class GenericCache<K, V> implements IGenericCache<K, V> {
 
     @Override
     public void clear() {
-        this.cacheMap = new HashMap<>();
+        this.cacheMap = new ConcurrentHashMap<>();
     }
 
     @Override

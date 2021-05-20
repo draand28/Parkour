@@ -32,7 +32,7 @@ public class ChatListener extends AbstractPluginReceiver implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (!parkour.getConfig().isChatPrefix()) {
+        if (!parkour.getDefaultConfig().isChatPrefix()) {
             return;
         }
 
@@ -40,7 +40,7 @@ public class ChatListener extends AbstractPluginReceiver implements Listener {
         String rank = PlayerInfo.getParkourRank(event.getPlayer());
 
         // should we completely override the chat format
-        if (parkour.getConfig().isChatPrefixOverride()) {
+        if (parkour.getDefaultConfig().isChatPrefixOverride()) {
             finalMessage = TranslationUtils.getTranslation("Event.Chat", false)
                     .replace(PARKOUR_RANK_PLACEHOLDER, rank)
                     .replace(PLAYER_PLACEHOLDER, event.getPlayer().getDisplayName())
@@ -84,13 +84,13 @@ public class ChatListener extends AbstractPluginReceiver implements Listener {
         }
 
         if (!isParkourCommand && parkour.getPlayerManager().isPlaying(player)) {
-            if (!parkour.getConfig().isDisableCommandsOnCourse()
+            if (!parkour.getDefaultConfig().isDisableCommandsOnCourse()
                     || PermissionUtils.hasPermission(player, Permission.ADMIN_ALL)) {
                 return;
             }
 
             boolean allowed = false;
-            for (String word : parkour.getConfig().getWhitelistedCommands()) {
+            for (String word : parkour.getDefaultConfig().getWhitelistedCommands()) {
                 if (event.getMessage().startsWith("/" + word + " ") || event.getMessage().equalsIgnoreCase("/" + word)) {
                     allowed = true;
                     break;

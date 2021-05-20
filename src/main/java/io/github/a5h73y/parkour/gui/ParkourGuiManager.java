@@ -38,7 +38,7 @@ public class ParkourGuiManager extends AbstractPluginReceiver {
 	 */
 	public void showMenu(Player player, AbstractMenu menu) {
 		InventoryGui gui = new InventoryGui(parkour, null, PARKOUR_TITLE_PREFIX + menu.getTitle(), menu.getGuiLayout());
-		gui.setFiller(new ItemStack(Parkour.getDefaultConfig().getGuiFillerMaterial(), 1));
+		gui.setFiller(new ItemStack(Parkour.getInstanceConfig().getGuiFillerMaterial(), 1));
 
 		menu.addContent(gui, player);
 

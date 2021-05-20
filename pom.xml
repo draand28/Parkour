@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.a5h73y</groupId>
 	<artifactId>Parkour</artifactId>
-	<version>6.5</version>
+	<version>7.0</version>
 	<packaging>jar</packaging>
 
 	<name>Parkour</name>
@@ -37,9 +37,9 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<!-- Vault Repo -->
+		<!-- Jitpack Repo -->
 		<repository>
-			<id>vault-repo</id>
+			<id>jitpack-repo</id>
 			<url>https://jitpack.io/</url>
 		</repository>
 		<!-- VersionCompare Repo -->
@@ -163,6 +163,12 @@
 			<version>1.3.7</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- Simplix Storage -->
+		<dependency>
+			<groupId>com.github.simplix-softworks</groupId>
+			<artifactId>simplixstorage</artifactId>
+			<version>3.2.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -214,6 +220,8 @@
 							<include>org.slf4j:*</include>
 							<include>de.themoep:*</include>
 							<include>com.g00fy2:*</include>
+							<include>com.github.simplix-softworks:*</include>
+							<include>org.json:*</include>
 						</includes>
 					</artifactSet>
 					<filters>
@@ -232,6 +240,10 @@
 						<relocation>
 							<pattern>com.cryptomorin.xseries</pattern>
 							<shadedPattern>io.github.a5h73y.parkour.support</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>com.github.simplix-softworks</pattern>
+							<shadedPattern>io.github.a5h73y.parkour.storage</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>

@@ -81,7 +81,7 @@ public class PluginUtils {
      * @param message message to log
      */
     public static void debug(String message) {
-        if (Parkour.getDefaultConfig().getBoolean("Debug", false)) {
+        if (Parkour.getInstanceConfig().getOrDefault("Debug", false)) {
             log(message, 3);
         }
     }
@@ -94,7 +94,7 @@ public class PluginUtils {
      * @param message message to log
      */
     public static void logToFile(String message) {
-        if (!Parkour.getDefaultConfig().getBoolean("Other.LogToFile")) {
+        if (!Parkour.getInstanceConfig().getBoolean("Other.LogToFile")) {
             return;
         }
 

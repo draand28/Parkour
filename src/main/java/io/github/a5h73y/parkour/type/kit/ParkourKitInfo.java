@@ -1,16 +1,11 @@
 package io.github.a5h73y.parkour.type.kit;
 
-import static io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig.PARKOUR_KIT_CONFIG_PREFIX;
-
 import io.github.a5h73y.parkour.Parkour;
-import io.github.a5h73y.parkour.configuration.ParkourConfiguration;
-import io.github.a5h73y.parkour.enums.ConfigType;
+import io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig;
 import io.github.a5h73y.parkour.type.course.CourseInfo;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * ParkourKit Information Utility class.
@@ -18,13 +13,14 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class ParkourKitInfo {
 
+    public static final String PARKOUR_KIT_CONFIG_PREFIX = "ParkourKit.";
+
     /**
      * Get all available ParkourKit names.
      * @return parkour kit names
      */
     public static Set<String> getAllParkourKitNames() {
-        ConfigurationSection section = getParkourKitConfig().getConfigurationSection("ParkourKit");
-        return section != null ? section.getKeys(false) : new HashSet<>();
+        return getParkourKitConfig().getSection("ParkourKit").keySet();
     }
 
     /**
@@ -42,9 +38,7 @@ public class ParkourKitInfo {
      * @return material names for kit
      */
     public static Set<String> getParkourKitMaterials(String kitName) {
-        ConfigurationSection section =
-                getParkourKitConfig().getConfigurationSection(PARKOUR_KIT_CONFIG_PREFIX + kitName.toLowerCase());
-        return section != null ? section.getKeys(false) : new HashSet<>();
+        return getParkourKitConfig().getSection(PARKOUR_KIT_CONFIG_PREFIX + kitName.toLowerCase()).keySet();
     }
 
     /**
@@ -80,19 +74,22 @@ public class ParkourKitInfo {
      */
     public static void deleteKit(String kitName) {
         getParkourKitConfig().set(PARKOUR_KIT_CONFIG_PREFIX + kitName.toLowerCase(), null);
-        getParkourKitConfig().save();
         Parkour.getInstance().getParkourKitManager().clearCache(kitName);
     }
 
     /**
-     * Get the ParkourKit {@link ParkourConfiguration}.
+     * Get the {@link ParkourKitConfig}.
      * @return the parkourkit.yml configuration
      */
-    private static ParkourConfiguration getParkourKitConfig() {
-        return Parkour.getConfig(ConfigType.PARKOURKIT);
+    private static ParkourKitConfig getParkourKitConfig() {
+        return Parkour.getInstance().getConfigManager().getParkourKitConfig();
     }
 
     private ParkourKitInfo() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static void removeMaterial(String kitName, String material) {
+        getParkourKitConfig().set(kitName + "." + material, null);
     }
 }

@@ -18,7 +18,7 @@ public class Checkpoint implements Serializable {
     private final double z;
     private final float pitch;
     private final float yaw;
-    private final String world;
+    private final String worldName;
 
     private final double nextCheckpointX;
     private final double nextCheckpointY;
@@ -38,7 +38,7 @@ public class Checkpoint implements Serializable {
         this.z = location.getZ();
         this.yaw = location.getYaw();
         this.pitch = location.getPitch();
-        this.world = location.getWorld().getName();
+        this.worldName = location.getWorld().getName();
         this.nextCheckpointX = nextCheckpointX;
         this.nextCheckpointY = nextCheckpointY;
         this.nextCheckpointZ = nextCheckpointZ;
@@ -49,15 +49,15 @@ public class Checkpoint implements Serializable {
      * @return checkpoint location
      */
     public Location getLocation() {
-        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+        return new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
     }
 
     /**
      * Get the World of the Checkpoint.
      * @return checkpoint world
      */
-    public String getWorld() {
-        return world;
+    public String getWorldName() {
+        return worldName;
     }
 
     /**

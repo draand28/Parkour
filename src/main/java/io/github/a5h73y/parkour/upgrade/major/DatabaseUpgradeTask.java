@@ -162,7 +162,7 @@ public class DatabaseUpgradeTask extends TimedUpgradeTask {
 		} else {
 			String pathOverride = defaultConfig.getString("SQLite.PathOverride", "");
 			String path = !pathOverride.isEmpty() ? pathOverride
-					: Parkour.getInstance().getDataFolder() + File.separator + "sqlite-db" + File.separator;
+					: Parkour.getInstance().getDataFolder() + "/sqlite-db/";
 
 			database = new SQLite(path, "parkour.db");
 		}

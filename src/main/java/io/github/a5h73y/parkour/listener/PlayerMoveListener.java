@@ -46,21 +46,21 @@ public class PlayerMoveListener extends AbstractPluginReceiver implements Listen
 
         // Only do fall checks if mode is not 'dropper' course
         if (session.getParkourMode() != ParkourMode.DROPPER
-                && player.getFallDistance() > parkour.getConfig().getMaxFallTicks()) {
+                && player.getFallDistance() > parkour.getDefaultConfig().getMaxFallTicks()) {
             parkour.getPlayerManager().playerDie(player);
             return;
         }
 
         if (player.getLocation().getBlock().isLiquid()
-                && parkour.getConfig().getBoolean("OnCourse.DieInLiquid")) {
+                && parkour.getDefaultConfig().getBoolean("OnCourse.DieInLiquid")) {
             parkour.getPlayerManager().playerDie(player);
         }
 
-        if (!parkour.getConfig().isUseParkourKit()) {
+        if (!parkour.getDefaultConfig().isUseParkourKit()) {
             return;
         }
 
-        if (parkour.getConfig().isAttemptLessChecks()
+        if (parkour.getDefaultConfig().isAttemptLessChecks()
                 && MaterialUtils.sameBlockLocations(event.getFrom(), event.getTo())) {
             return;
         }
@@ -68,7 +68,7 @@ public class PlayerMoveListener extends AbstractPluginReceiver implements Listen
         Material belowMaterial = player.getLocation().getBlock().getRelative(BlockFace.DOWN).getType();
 
         // if player is on half-block or jumping, get actual location.
-        if (!parkour.getConfig().isLegacyGroundDetection()
+        if (!parkour.getDefaultConfig().isLegacyGroundDetection()
                 && (!XBlock.isAir(player.getLocation().getBlock().getType()) || !player.isOnGround())) {
             belowMaterial = player.getLocation().getBlock().getType();
         }

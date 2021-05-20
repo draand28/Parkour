@@ -61,20 +61,20 @@ public class SoundsManager extends AbstractPluginReceiver implements Cacheable<S
 	 * Only enabled sounds will be added, and their details retrieved.
 	 */
 	private void populateCache() {
-		if (parkour.getConfig().isSoundEnabled()) {
+		if (parkour.getDefaultConfig().isSoundEnabled()) {
 			for (SoundType soundType : SoundType.values()) {
-				if (!parkour.getConfig().isSoundEnabled(soundType)) {
+				if (!parkour.getDefaultConfig().isSoundEnabled(soundType)) {
 					continue;
 				}
 
-				String soundName = parkour.getConfig().getString("Sounds."
+				String soundName = parkour.getDefaultConfig().getString("Sounds."
 						+ soundType.getConfigEntry() + ".Sound");
 				Optional<XSound> matchingSound = XSound.matchXSound(soundName);
 
 				if (matchingSound.isPresent()) {
-					float volume = (float) parkour.getConfig().getDouble("Sounds."
+					float volume = (float) parkour.getDefaultConfig().getDouble("Sounds."
 							+ soundType.getConfigEntry() + ".Volume");
-					float pitch = (float) parkour.getConfig().getDouble("Sounds."
+					float pitch = (float) parkour.getDefaultConfig().getDouble("Sounds."
 							+ soundType.getConfigEntry() + ".Pitch");
 					soundTypes.put(soundType, new SoundDetails(
 							matchingSound.get().parseSound(), volume, pitch));

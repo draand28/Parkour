@@ -176,7 +176,7 @@ public class MaterialUtils {
 		//check if player is standing in a half-block
 		if (!block.getType().equals(Material.AIR) && !block.getType().equals(CAVE_AIR.parseMaterial())
 				&& !block.getType().equals(lookupMaterial(
-						Parkour.getDefaultConfig().getString("OnCourse.CheckpointMaterial")))) {
+						Parkour.getInstanceConfig().getString("OnCourse.CheckpointMaterial")))) {
 			TranslationUtils.sendMessage(player, "Invalid Material for Checkpoint: &b" + block.getType());
 			return false;
 		}

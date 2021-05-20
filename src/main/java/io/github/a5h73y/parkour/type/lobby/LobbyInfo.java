@@ -20,9 +20,7 @@ public class LobbyInfo {
 	 * @return lobby names
 	 */
 	public static Set<String> getAllLobbyNames() {
-		return Parkour.getDefaultConfig().isConfigurationSection("Lobby")
-					? Parkour.getDefaultConfig().getConfigurationSection("Lobby").getKeys(false)
-					: Collections.emptySet();
+		return Parkour.getInstanceConfig().getSection("Lobby").keySet();
 	}
 
 	/**
@@ -39,7 +37,7 @@ public class LobbyInfo {
 	 * @return lobby exists
 	 */
 	public static boolean doesLobbyExist(String lobbyName) {
-		return Parkour.getDefaultConfig().contains("Lobby." + lobbyName.toLowerCase());
+		return Parkour.getInstanceConfig().contains("Lobby." + lobbyName.toLowerCase());
 	}
 
 	/**
@@ -49,7 +47,7 @@ public class LobbyInfo {
 	 */
 	public static Location getLobbyLocation(String lobbyName) {
 		String path = "Lobby." + lobbyName.toLowerCase();
-		DefaultConfig config = Parkour.getDefaultConfig();
+		DefaultConfig config = Parkour.getInstanceConfig();
 		World world = Bukkit.getWorld(config.getString(path + ".World"));
 		double x = config.getDouble(path + ".X");
 		double y = config.getDouble(path + ".Y");
@@ -65,7 +63,7 @@ public class LobbyInfo {
 	 * @return world name
 	 */
 	public static String getLobbyWorld(String lobbyName) {
-		return Parkour.getDefaultConfig().getString("Lobby." + lobbyName + ".World");
+		return Parkour.getInstanceConfig().getString("Lobby." + lobbyName + ".World");
 	}
 
 	/**
@@ -75,7 +73,7 @@ public class LobbyInfo {
 	 * @param location location
 	 */
 	public static void setLobby(String lobbyName, Location location) {
-		DefaultConfig config = Parkour.getDefaultConfig();
+		DefaultConfig config = Parkour.getInstanceConfig();
 		String path = "Lobby." + lobbyName.toLowerCase();
 		config.set(path + ".World", location.getWorld().getName());
 		config.set(path + ".X", location.getX());
@@ -83,7 +81,6 @@ public class LobbyInfo {
 		config.set(path + ".Z", location.getZ());
 		config.set(path + ".Pitch", location.getPitch());
 		config.set(path + ".Yaw", location.getYaw());
-		config.save();
 	}
 
 	/**
@@ -92,8 +89,7 @@ public class LobbyInfo {
 	 * @param lobbyName lobby name
 	 */
 	public static void deleteLobby(String lobbyName) {
-		Parkour.getDefaultConfig().set("Lobby." + lobbyName.toLowerCase(), null);
-		Parkour.getDefaultConfig().save();
+		Parkour.getInstanceConfig().set("Lobby." + lobbyName.toLowerCase(), null);
 	}
 
 	/**
@@ -102,7 +98,7 @@ public class LobbyInfo {
 	 * @return required ParkourLevel
 	 */
 	public static Integer getRequiredLevel(String lobbyName) {
-		return Parkour.getDefaultConfig().getInt("Lobby." + lobbyName + ".RequiredLevel", 0);
+		return Parkour.getInstanceConfig().getInt("Lobby." + lobbyName + ".RequiredLevel");
 	}
 
 	/**
@@ -120,8 +116,7 @@ public class LobbyInfo {
 	 * @param requiredLevel required ParkourLevel
 	 */
 	public static void setRequiredLevel(String lobbyName, Integer requiredLevel) {
-		Parkour.getDefaultConfig().set("Lobby." + lobbyName.toLowerCase() + ".RequiredLevel", requiredLevel);
-		Parkour.getDefaultConfig().save();
+		Parkour.getInstanceConfig().set("Lobby." + lobbyName.toLowerCase() + ".RequiredLevel", requiredLevel);
 	}
 
 	private LobbyInfo() {

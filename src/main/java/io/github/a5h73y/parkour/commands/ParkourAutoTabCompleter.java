@@ -56,7 +56,7 @@ public class ParkourAutoTabCompleter extends AbstractPluginReceiver implements T
             "courses", "players", "ranks", "lobbies");
 
     private static final List<String> ECONOMY_COMMANDS = Arrays.asList(
-            "info", "recreate", "setprize", "setfee");
+            "info", "setprize", "setfee");
 
     private static final List<String> LINK_COMMANDS = Arrays.asList(
             "course", "lobby", "reset");

@@ -1,10 +1,7 @@
 package io.github.a5h73y.parkour.conversation;
 
-import static io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig.PARKOUR_KIT_CONFIG_PREFIX;
-
 import io.github.a5h73y.parkour.Parkour;
 import io.github.a5h73y.parkour.conversation.other.AddKitItemConversation;
-import io.github.a5h73y.parkour.enums.ConfigType;
 import io.github.a5h73y.parkour.type.kit.ParkourKitInfo;
 import org.bukkit.ChatColor;
 import org.bukkit.conversations.Conversable;
@@ -90,9 +87,7 @@ public class EditParkourKitConversation extends ParkourConversation {
         protected Prompt acceptValidatedInput(@NotNull ConversationContext context,
                                               @NotNull String material) {
             String kitName = (String) context.getSessionData("kit");
-
-            Parkour.getConfig(ConfigType.PARKOURKIT).set(PARKOUR_KIT_CONFIG_PREFIX + kitName + "." + material, null);
-            Parkour.getConfig(ConfigType.PARKOURKIT).save();
+            ParkourKitInfo.removeMaterial(kitName, material);
             Parkour.getInstance().getParkourKitManager().clearCache(kitName);
             for (String courseName : ParkourKitInfo.getDependentCourses(kitName)) {
                 Parkour.getInstance().getCourseManager().clearCache(courseName);

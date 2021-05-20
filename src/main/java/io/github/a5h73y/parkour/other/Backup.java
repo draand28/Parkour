@@ -17,9 +17,9 @@ import java.util.zip.ZipOutputStream;
  */
 public class Backup {
 
-    private static final String SOURCE_FOLDER = Parkour.getInstance().getDataFolder().toString();
-    private static final String BACKUPS_FOLDER = "backups";
-    private static final String OUTPUT_ZIP_FILE = SOURCE_FOLDER + File.separator + BACKUPS_FOLDER + File.separator
+    private static final String SOURCE_FOLDER = Parkour.getInstance().getDataFolder().toString() + "/";
+    private static final String BACKUPS_FOLDER = "backups/";
+    private static final String OUTPUT_ZIP_FILE = SOURCE_FOLDER + BACKUPS_FOLDER
             + "[" + DateTimeUtils.getDisplayDate() + "] Backup.zip";
     private static List<String> fileList;
 
@@ -49,7 +49,7 @@ public class Backup {
     private static void zipIt() {
         byte[] buffer = new byte[1024];
         try {
-            File outputFolder = new File(SOURCE_FOLDER + File.separator + BACKUPS_FOLDER);
+            File outputFolder = new File(SOURCE_FOLDER + BACKUPS_FOLDER);
             if (!outputFolder.exists()) {
                 outputFolder.mkdirs();
             }
@@ -61,8 +61,7 @@ public class Backup {
                 ZipEntry ze = new ZipEntry(file);
                 zos.putNextEntry(ze);
 
-                FileInputStream in =
-                        new FileInputStream(SOURCE_FOLDER + File.separator + file);
+                FileInputStream in = new FileInputStream(SOURCE_FOLDER + file);
 
                 int len;
                 while ((len = in.read(buffer)) > 0) {

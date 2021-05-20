@@ -1,16 +1,9 @@
 package io.github.a5h73y.parkour.configuration;
 
-import io.github.a5h73y.parkour.configuration.impl.CheckpointsConfig;
-import io.github.a5h73y.parkour.configuration.impl.CoursesConfig;
 import io.github.a5h73y.parkour.configuration.impl.DefaultConfig;
-import io.github.a5h73y.parkour.configuration.impl.EconomyConfig;
-import io.github.a5h73y.parkour.configuration.impl.InventoryConfig;
 import io.github.a5h73y.parkour.configuration.impl.ParkourKitConfig;
-import io.github.a5h73y.parkour.configuration.impl.PlayersConfig;
 import io.github.a5h73y.parkour.configuration.impl.StringsConfig;
-import io.github.a5h73y.parkour.enums.ConfigType;
 import java.io.File;
-import java.util.EnumMap;
 
 /**
  * Parkour Configuration Manager.
@@ -20,7 +13,10 @@ public class ConfigManager {
 
 	private final File dataFolder;
 
-	private final EnumMap<ConfigType, ParkourConfiguration> parkourConfigs = new EnumMap<>(ConfigType.class);
+	private final DefaultConfig defaultConfig;
+	private final StringsConfig stringsConfig;
+	private final ParkourKitConfig parkourKitConfig;
+//	private final OtherConfig otherConfig;
 
 	/**
 	 * Initialise the Config Manager.
@@ -30,42 +26,35 @@ public class ConfigManager {
 	 */
 	public ConfigManager(File dataFolder) {
 		this.dataFolder = dataFolder;
-		createParkourFolder();
+		createParkourFolders();
 
-		parkourConfigs.put(ConfigType.DEFAULT, new DefaultConfig());
-		parkourConfigs.put(ConfigType.STRINGS, new StringsConfig());
-		parkourConfigs.put(ConfigType.COURSES, new CoursesConfig());
-		parkourConfigs.put(ConfigType.CHECKPOINTS, new CheckpointsConfig());
-		parkourConfigs.put(ConfigType.PLAYERS, new PlayersConfig());
-		parkourConfigs.put(ConfigType.INVENTORY, new InventoryConfig());
-		parkourConfigs.put(ConfigType.PARKOURKIT, new ParkourKitConfig());
-		parkourConfigs.put(ConfigType.ECONOMY, new EconomyConfig());
-
-		for (ParkourConfiguration parkourConfig: parkourConfigs.values()) {
-			parkourConfig.setupFile(this.dataFolder);
-		}
+		defaultConfig = new DefaultConfig(new File(dataFolder, "config.yml"));
+		stringsConfig = new StringsConfig(new File(dataFolder, "strings.yml"));
+		parkourKitConfig = new ParkourKitConfig(new File(dataFolder, "parkourkit.yml"));
 	}
 
-	/**
-	 * Get matching ParkourConfiguration for the ConfigType.
-	 *
-	 * @param type requested config type
-	 * @return matching ParkourConfiguration
-	 */
-	public ParkourConfiguration get(ConfigType type) {
-		return parkourConfigs.get(type);
+	public DefaultConfig getDefaultConfig() {
+		return defaultConfig;
+	}
+
+	public StringsConfig getStringsConfig() {
+		return stringsConfig;
+	}
+
+	public ParkourKitConfig getParkourKitConfig() {
+		return parkourKitConfig;
 	}
 
 	/**
 	 * Reload each of the configuration files.
 	 */
 	public void reloadConfigs() {
-		for (ParkourConfiguration parkourConfig : parkourConfigs.values()) {
-			parkourConfig.reload();
-		}
+		defaultConfig.forceReload();
+		stringsConfig.forceReload();
+		parkourKitConfig.forceReload();
 	}
 
-	private void createParkourFolder() {
+	private void createParkourFolders() {
 		if (!dataFolder.exists()) {
 			dataFolder.mkdirs();
 		}

@@ -49,7 +49,7 @@ public class DateTimeUtils {
 	 */
 	public static String displayCurrentTime(long milliseconds) {
 		MillisecondConverter time = new MillisecondConverter(milliseconds);
-		String pattern = Parkour.getDefaultConfig().isDisplayMilliseconds() ? HH_MM_SS_MS : HH_MM_SS;
+		String pattern = Parkour.getInstanceConfig().isDisplayMilliseconds() ? HH_MM_SS_MS : HH_MM_SS;
 		return String.format(pattern, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMilliseconds());
 	}
 

@@ -39,7 +39,7 @@ public class JoinCoursesGui implements AbstractMenu {
 		for (String course : CourseInfo.getAllCourseNames()) {
 			group.addElement(
 					new StaticGuiElement('e',
-							new ItemStack(Parkour.getDefaultConfig().getGuiMaterial()),
+							new ItemStack(Parkour.getInstanceConfig().getGuiMaterial()),
 							click -> {
 								playerManager.joinCourse(player, course);
 								parent.close();
