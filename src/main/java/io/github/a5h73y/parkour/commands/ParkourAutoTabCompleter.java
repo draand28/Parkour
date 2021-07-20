@@ -32,8 +32,8 @@ public class ParkourAutoTabCompleter extends AbstractPluginReceiver implements T
             "contact", "cmds", "version", "challenge");
 
     private static final List<String> ADMIN_ONLY_COMMANDS = Arrays.asList(
-            "setlobby", "setlobbycommand", "reset", "economy", "recreate", "whitelist", "setlevel", "setplayer",
-            "setrank", "settings", "sql", "cache", "reload", "placeholder", "config");
+            "setlobby", "reset", "economy", "recreate", "whitelist", "setlevel", "setplayer", "setrank", "settings",
+            "sql", "cache", "reload");
 
     private static final List<String> ADMIN_COURSE_COMMANDS = Arrays.asList(
             "checkpoint", "ready", "setstart", "setcourse", "setautostart", "select", "deselect", "done", "link", "linkkit",
@@ -214,7 +214,6 @@ public class ParkourAutoTabCompleter extends AbstractPluginReceiver implements T
                 allowedCommands = CHALLENGE_COMMANDS;
                 break;
             case "lobby":
-            case "setlobbycommand":
                 allowedCommands = new ArrayList<>(LobbyInfo.getAllLobbyNames());
                 break;
             case "join":

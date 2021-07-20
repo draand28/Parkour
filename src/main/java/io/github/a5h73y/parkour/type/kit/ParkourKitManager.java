@@ -176,14 +176,11 @@ public class ParkourKitManager extends AbstractPluginReceiver implements Cacheab
 			for (String material : materials) {
 				String actionTypeName = ParkourKitInfo.getActionTypeForMaterial(kitName, material);
 				ActionType actionType = validateActionType(actionTypeName);
-				if (actionType == null) {
+				if (actionType != null) {
+					TranslationUtils.sendValue(sender, material, actionTypeName);
+				} else {
 					TranslationUtils.sendMessage(sender, "Invalid Action Type: " + actionTypeName);
-					return;
 				}
-				if (actionTypeName.equalsIgnoreCase("potion")) {
-					actionTypeName += " (" + ParkourKitInfo.getEffectTypeForMaterial(kitName, material) + ")";
-				}
-				TranslationUtils.sendValue(sender, material, actionTypeName);
 			}
 
 		} else {
@@ -258,8 +255,7 @@ public class ParkourKitManager extends AbstractPluginReceiver implements Cacheab
 			if (actionType != null) {
 				double strength = config.getDouble(configPath + "Strength", 1);
 				int duration = config.getInt(configPath + "Duration", 200);
-				String effect = config.getString(configPath + "Effect", "");
-				actionTypes.put(material, new ParkourKitAction(actionType, strength, duration, effect));
+				actionTypes.put(material, new ParkourKitAction(actionType, strength, duration));
 			}
 		}
 

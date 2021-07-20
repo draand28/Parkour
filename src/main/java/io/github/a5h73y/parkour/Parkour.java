@@ -22,9 +22,10 @@ import io.github.a5h73y.parkour.manager.SoundsManager;
 import io.github.a5h73y.parkour.other.Backup;
 import io.github.a5h73y.parkour.other.CommandUsage;
 import io.github.a5h73y.parkour.other.ParkourUpdater;
+import io.github.a5h73y.parkour.plugin.AacApi;
+import io.github.a5h73y.parkour.plugin.BountifulApi;
 import io.github.a5h73y.parkour.plugin.EconomyApi;
 import io.github.a5h73y.parkour.plugin.PlaceholderApi;
-import io.github.a5h73y.parkour.plugin.TitleUtils;
 import io.github.a5h73y.parkour.type.challenge.ChallengeManager;
 import io.github.a5h73y.parkour.type.checkpoint.CheckpointManager;
 import io.github.a5h73y.parkour.type.course.CourseInfo;
@@ -35,13 +36,14 @@ import io.github.a5h73y.parkour.type.player.PlayerManager;
 import io.github.a5h73y.parkour.upgrade.ParkourUpgrader;
 import io.github.a5h73y.parkour.utility.PluginUtils;
 import io.github.a5h73y.parkour.utility.TranslationUtils;
-import io.github.g00fy2.versioncompare.Version;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import io.github.g00fy2.versioncompare.Version;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bstats.charts.SingleLineChart;
@@ -57,7 +59,7 @@ public class Parkour extends JavaPlugin {
     private static final int SPIGOT_PLUGIN_ID = 23685;
     private static Parkour instance;
 
-    private TitleUtils titleUtils;
+    private BountifulApi bountifulApi;
     private EconomyApi economyApi;
     private PlaceholderApi placeholderApi;
 
@@ -220,8 +222,8 @@ public class Parkour extends JavaPlugin {
         return soundsManager;
     }
 
-    public TitleUtils getBountifulApi() {
-        return titleUtils;
+    public BountifulApi getBountifulApi() {
+        return bountifulApi;
     }
 
     public EconomyApi getEconomyApi() {
@@ -242,9 +244,10 @@ public class Parkour extends JavaPlugin {
     }
 
     private void setupPlugins() {
-        titleUtils = new TitleUtils();
+        bountifulApi = new BountifulApi();
         economyApi = new EconomyApi();
         placeholderApi = new PlaceholderApi();
+        new AacApi();
     }
 
     private void registerManagers() {
@@ -307,9 +310,12 @@ public class Parkour extends JavaPlugin {
     }
 
     private void upgradeParkour() {
-        if (new ParkourUpgrader(this).beginUpgrade()) {
-            onEnable();
-        }
+        CompletableFuture.supplyAsync(() -> new ParkourUpgrader(this).getAsBoolean())
+                .thenAccept(success -> {
+                    if (success) {
+                        onEnable();
+                    }
+                });
     }
 
     /**

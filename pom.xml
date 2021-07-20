@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.a5h73y</groupId>
 	<artifactId>Parkour</artifactId>
-	<version>6.6</version>
+	<version>6.5.1-BAPI</version>
 	<packaging>jar</packaging>
 
 	<name>Parkour</name>
@@ -57,6 +57,11 @@
 			<id>minebench-repo</id>
 			<url>https://repo.minebench.de/</url>
 		</repository>
+		<!-- AAC API -->
+		<repository>
+			<id>janmm14-public</id>
+			<url>https://repo.janmm14.de/repository/public/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -80,11 +85,31 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- Bountiful API -->
+		<dependency>
+			<groupId>com.connorlinfoot</groupId>
+			<artifactId>BountifulAPI</artifactId>
+			<version>1.6.4</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<!-- Placeholder API -->
 		<dependency>
 			<groupId>me.clip</groupId>
 			<artifactId>placeholderapi</artifactId>
 			<version>2.10.9</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- AAC API -->
+		<dependency>
+			<groupId>de.janmm14</groupId>
+			<artifactId>aac-api</artifactId>
+			<version>4.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- bStats -->
@@ -118,7 +143,7 @@
 		<dependency>
 			<groupId>com.github.cryptomorin</groupId>
 			<artifactId>XSeries</artifactId>
-			<version>8.1.0</version>
+			<version>7.9.1.1</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- Version Compare -->
@@ -250,4 +275,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>bintray-a5h73y-repo</id>
+			<name>A5H73Y-repo</name>
+			<url>https://api.bintray.com/maven/a5h73y/repo/Parkour/;publish=1</url>
+		</repository>
+	</distributionManagement>
 </project>

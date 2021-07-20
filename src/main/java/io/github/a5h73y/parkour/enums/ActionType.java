@@ -12,8 +12,7 @@ public enum ActionType {
 	NORUN,
 	NOPOTION,
 	CLIMB,
-	REPULSE,
-	POTION;
+	REPULSE;
 
 	@NotNull
 	public String getDisplayName() {

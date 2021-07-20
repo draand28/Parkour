@@ -15,7 +15,6 @@ public class ParkourKitAction implements Serializable {
 	private final ActionType actionType;
 	private final double strength;
 	private final int duration;
-	private final String effect;
 
 	/**
 	 * Construct a ParkourKitAction from the details.
@@ -24,13 +23,11 @@ public class ParkourKitAction implements Serializable {
 	 * @param actionType associated action type
 	 * @param strength action strength
 	 * @param duration action duration
-	 * @param effect action potion effect type
 	 */
-	public ParkourKitAction(ActionType actionType, double strength, int duration, String effect) {
+	public ParkourKitAction(ActionType actionType, double strength, int duration) {
 		this.actionType = actionType;
 		this.strength = strength;
 		this.duration = duration;
-		this.effect = effect;
 	}
 
 	/**
@@ -55,13 +52,5 @@ public class ParkourKitAction implements Serializable {
 	 */
 	public int getDuration() {
 		return duration;
-	}
-
-	/**
-	 * Get the Potion effect.
-	 * @return effect
-	 */
-	public String getEffect() {
-		return effect;
 	}
 }
