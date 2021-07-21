@@ -22,7 +22,6 @@ import io.github.a5h73y.parkour.manager.SoundsManager;
 import io.github.a5h73y.parkour.other.Backup;
 import io.github.a5h73y.parkour.other.CommandUsage;
 import io.github.a5h73y.parkour.other.ParkourUpdater;
-import io.github.a5h73y.parkour.plugin.AacApi;
 import io.github.a5h73y.parkour.plugin.BountifulApi;
 import io.github.a5h73y.parkour.plugin.EconomyApi;
 import io.github.a5h73y.parkour.plugin.PlaceholderApi;
@@ -41,7 +40,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import io.github.g00fy2.versioncompare.Version;
 import org.bstats.bukkit.Metrics;
@@ -247,7 +245,6 @@ public class Parkour extends JavaPlugin {
         bountifulApi = new BountifulApi();
         economyApi = new EconomyApi();
         placeholderApi = new PlaceholderApi();
-        new AacApi();
     }
 
     private void registerManagers() {
@@ -310,12 +307,9 @@ public class Parkour extends JavaPlugin {
     }
 
     private void upgradeParkour() {
-        CompletableFuture.supplyAsync(() -> new ParkourUpgrader(this).getAsBoolean())
-                .thenAccept(success -> {
-                    if (success) {
-                        onEnable();
-                    }
-                });
+        if (new ParkourUpgrader(this).beginUpgrade()) {
+            onEnable();
+        }
     }
 
     /**

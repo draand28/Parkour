@@ -20,6 +20,15 @@
     "consoleSyntax": "pac cache [course / database / lobby / parkourkit / sound / all]"
   },
   {
+    "command": "setlobbycommand",
+    "title": "Add a Parkour Lobby Command",
+    "arguments": "[lobby] [command]",
+    "example": "/pa setlobbycommand default give %PLAYER% minecraft:diamond 1",
+    "description": "Add a command to be executed when the Player teleports to the specified Lobby.",
+    "permission": "Parkour.Admin.*",
+    "commandGroup": "4"
+  },
+  {
     "command": "challenge",
     "title": "Course Challenge Management",
     "arguments": "(create / start / terminate / info) (course) [wager]",

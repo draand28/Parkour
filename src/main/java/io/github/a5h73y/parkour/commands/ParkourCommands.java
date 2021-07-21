@@ -518,6 +518,18 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
                         args.length > 1 ? args[1] : DEFAULT,
                         args.length == 3 ? args[2] : null);
                 break;
+				
+			case "setlobbycommand":
+                if (!PermissionUtils.hasPermission(player, Permission.ADMIN_ALL)) {
+                    return false;
+                }
+
+                if (!ValidationUtils.validateArgs(player, args, 3, 100)) {
+                    return false;
+                }
+
+                parkour.getLobbyManager().addLobbyCommand(player, args[1], StringUtils.extractMessageFromArgs(args, 2));
+                break;
 
             case "setmode":
             case "setparkourmode":
@@ -672,11 +684,14 @@ public class ParkourCommands extends AbstractPluginReceiver implements CommandEx
                 break;
 
             case "config":
+				if (!PermissionUtils.hasPermission(player, Permission.PARKOUR_ALL)) {
+                    return false;
+                }
                 if (!ValidationUtils.validateArgs(player, args, 2)) {
                     return false;
                 }
 
-                if (player.isOp() && !args[1].startsWith("MySQL")) {
+                if (!args[1].startsWith("MySQL")) {
                     TranslationUtils.sendValue(sender, args[1], parkour.getConfig().getString(args[1]));
                 }
                 break;
